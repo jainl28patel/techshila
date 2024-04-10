@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 
 var Schema = mongoose.Schema;
 
-const orderMedicines = new Schema({
-  id: String,
-  quantity: Number,
-});
-
 const order = new Schema(
   {
     store_id: String,
-    order_medicines: orderMedicines,
+    order_medicines: [
+      {
+        id: String,
+        quantity: Number,
+      },
+    ]
   },
   { timestamps: true }
 );
@@ -33,23 +33,10 @@ const medicines = new Schema(
     name: String,
     desc: String,
     stock_quantity: Number,
+    price: Number,
   },
   {
     collection: "medicines",
-  }
-);
-
-const orders = new Schema(
-  {
-    users: [
-      {
-        user_id: String,
-        order: order,
-      },
-    ],
-  },
-  {
-    collection: "orders",
   }
 );
 
@@ -68,12 +55,8 @@ const users = new Schema(
 
 const sales = new Schema(
   {
-    sale: [
-      {
-        date: String,
-        sale_details: medicineSaleDetails,
-      },
-    ],
+    date: String,
+    sale_details: [medicineSaleDetails],
   },
   {
     collection: "sales",
@@ -87,6 +70,7 @@ const stores = new Schema(
       {
         med_id: String,
         quantity: Number,
+        qty_sold: Number,
       },
     ],
     location: {
@@ -99,6 +83,17 @@ const stores = new Schema(
     collection: "stores",
   }
 );
+
+const orders = new Schema(
+  {
+    user_id: String,
+    order: order,
+  },
+  {
+    collection: "orders",
+  }
+);
+
 
 export const usersModel = mongoose.model("usersData", users);
 export const medicinesModel = mongoose.model("medicinesData", medicines);
