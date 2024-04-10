@@ -2,109 +2,113 @@ import mongoose from "mongoose";
 
 var Schema = mongoose.Schema;
 
-const order = new Schema(
-  {
-    store_id: String,
-    order_medicines: [
-      {
-        id: String,
-        quantity: Number,
-        price: Number,
-      },
-    ]
-  },
-  { timestamps: true }
-);
-
-const medicineSaleDetails = new Schema({
-  medicine_id: String,
-  quantity: Number,
-  details: [
-    {
-      store_id: String,
-      quantity: Number,
-    },
-  ],
-});
-
-// Collections
-
-const medicines = new Schema(
-  {
-    name: String,
-    desc: String,
-    stock_quantity: Number,
-    price: Number,
-  },
-  {
-    collection: "medicines",
-  }
-);
-
-const users = new Schema(
+const admin = new Schema(
   {
     name: String,
     email: String,
-    phone_number: String,
+    contact: String,
     password: String,
-    role: String,
+  },
+  {
+    collection: "admins",
+  }
+);
+
+const manager = new Schema(
+  {
+    name: String,
+    email: String,
+    contact: String,
+    password: String,
+    store_id: String,
+  },
+  {
+    collection: "managers",
+  }
+);
+
+const user = new Schema(
+  {
+    name: String,
+    email: String,
+    contact: String,
+    password: String,
+    order_history: [order]
   },
   {
     collection: "users",
   }
 );
 
-const sales = new Schema(
+const order = new Schema(
   {
-    date: String,
-    sale_details: [medicineSaleDetails],
-  },
-  {
-    collection: "sales",
-  }
-);
-
-const stores = new Schema(
-  {
-    manager_id: String,
-    manager_name: String,
-    manager_contact: String,
-    store_name: String,
-    inventory: [
+    status: "pending" | "completed" | "cancelled",
+    total_amount: Number,
+    medicines: [
       {
-        med_id: String,
+        id: String,
         quantity: Number,
-        qty_sold: Number,
-        qty_ordered: Number,
-      },
-    ],
-    location: {
-      name: String,
-      latitude: Number,
-      longitude: Number,
-    },
-  },
-  {
-    collection: "stores",
-  }
-);
-
-const orders = new Schema(
-  {
-    user_id: String,
-    order: order,
+        price: Number,
+      }
+    ]
   },
   {
     collection: "orders",
   }
-);
+)
 
+const inventory = new Schema(
+  {
+    name: String,
+    location: {
+      latitude: Number,
+      longitude: Number,
+      city: String,
+      state: String,
+    },
+    manager_id: String,
+    medicines: [medicine],
+    sales: Number,
+    ordered: Number,
+  },
+  {
+    collection: "inventory",
+  }
+)
 
-export const usersModel = mongoose.model("usersData", users);
-export const medicinesModel = mongoose.model("medicinesData", medicines);
-export const ordersModel = mongoose.model("ordersData", orders);
-export const storesModel = mongoose.model("storesData", stores);
-export const salesModel = mongoose.model("salesData", sales);
+const medicine = new Schema(
+  {
+    name: String,
+    desc: String,
+    expiry_date: Date,
+    qty_available: Number,
+    qty_ordered: Number,
+    price: Number,
+    batch_id: String,
+  },
+  {
+    collection: "medicines",
+  }
+)
+
+const batch = new Schema(
+  {
+    batch_id: String,
+    expiry_date: Date,
+    medicines: [medicine],
+  },
+  {
+    collection: "batches",
+  }
+)
+
+export const adminModel = mongoose.model("admins", admin);
+export const managerModel = mongoose.model("managers", manager);
+export const userModel = mongoose.model("users", user);
+export const orderModel = mongoose.model("orders", order);
+export const inventoryModel = mongoose.model("inventory", inventory);
+export const medicineModel = mongoose.model("medicines", medicine);
+export const batchModel = mongoose.model("batches", batch);
 
 mongoose
   .connect(process.env.MONGO_URI)
