@@ -3,47 +3,49 @@ import { Outlet, Link } from "react-router-dom";
 const Layout = () => {
   return (
     <>
-      <nav className={
-        "mt-0 fixed container z-10 flex flex-wrap justify-between items-center w-[100%] lg:min-w-[95vw] bg-transparent h-14"
-      }>
-        <div className=" lg:min-w-[95vw] container flex flex-wrap justify-between items-center sticky">
-        <div className="text-white ">
-          {/* <img src="\images\Logo (1).png" className="h-14 "></img> */}
-          lol
+      <div className=" flex flex-wrap justify-between items-center py-3 px-2 md:px-4 border-b-2 h-[8vh]">
+        <div className="flex items-center ">
+          <img src="\images\Pill.svg" alt="Pill" />
+          <span className="font-semibold text-[18px] tracking-tight ml-2">
+            MIM web
+          </span>
         </div>
-
-        <div
-          className={
-            "pr-5 hidden md:block inline float-right  justify-items space-x-12 text-[16px]"
-          }
-        >
-          {/* {showButton && <Login id="hiddenButton"></Login>} */}
+        <div className="flex items-center">
+          <img src="\images\Profile.svg" alt="Profile" />
         </div>
-
-        <button
-          id="hiddenButton"
-          className="float-right block md:hidden"
-
-        >
-
-        </button>
       </div>
-
-      </nav>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/stores">Stores</Link>
-          </li>
-          <li>
-            <Link to="/medicines">Medicines</Link>
-          </li>
-        </ul>
-      </nav>
-      <Outlet />
+      <div className=" flex">
+        <div className="  w-[15vw] py-5 px-4 border-r-2 h-[92vh]  ">
+          <div className="">
+            <Link to="/">
+              {/* Dashboard */}
+              <div className="flex px-4 py-3 rounded-[6px]  bg-[#303F9F] text-[14px] items-center text-white ">
+                <img src="\images\Icon.svg" alt="" className="mr-3" />
+                Dashboard
+              </div>
+            </Link>
+          </div>
+          <div className="">
+            <Link to="/stores">
+              {/* Dashboard */}
+              <div className="flex px-4 py-3 rounded-[6px]   text-[14px] items-center ">
+                <img src="\images\HardDrives.svg" alt="" className="mr-3" />
+                Stores
+              </div>
+            </Link>
+          </div>
+          <div className="">
+            <Link to="/medicines">
+              {/* Dashboard */}
+              <div className="flex px-4 py-3 rounded-[6px]   text-[14px] items-center ">
+                <img src="\images\Prescription.svg" alt="" className="mr-3" />
+                Medicines
+              </div>
+            </Link>
+          </div>
+        </div>
+        <Outlet />
+      </div>
     </>
   );
 };
