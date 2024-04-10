@@ -9,6 +9,7 @@ const order = new Schema(
       {
         id: String,
         quantity: Number,
+        price: Number,
       },
     ]
   },

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-import { usersModel, storesModel, salesModel, medicinesModel } from "../db/models.mjs";
+import { usersModel, storesModel, salesModel, medicinesModel, ordersModel } from "../db/models.mjs";
 import { findUserByMail, findUserByPhone, isValidEmail, isValidCoordinates } from "./utils.mjs";
 
 
@@ -145,6 +145,36 @@ router.get("/medicines", isAdmin, async (req, res) => {
                 sales: sales
             })
         })
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(403);
+    }
+})
+
+router.get("/dashboard", isAdmin, async (req, res) => {
+    // return {no_of_stores, no_of_medicines, total_sales, total_ordered}
+    try {
+        let stores = await storesModel.find();
+        let medicines = await medicinesModel.find();
+        let order = await ordersModel.find();
+        let response = {
+            no_of_stores: stores.length,
+            no_of_medicines: medicines.length,
+            total_sales: 0,
+            total_ordered: 0
+        }
+        stores.forEach(store => {
+            store.inventory.forEach(med => {
+                response.total_ordered += med.qty_ordered;
+                response.total_sales += med.qty_sold;
+            })
+        })
+        // order.forEach(order => {
+        //     order.order.order_medicines.forEach(orderDetail => {
+        //         response.total_sales += orderDetail.quantity;
+        //     })
+        // })
         res.send(response);
     } catch (error) {
         console.log(error);
