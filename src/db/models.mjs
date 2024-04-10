@@ -90,6 +90,7 @@ const stores = new Schema(
       },
     ],
     location: {
+      name: String,
       latitude: Number,
       longitude: Number,
     },
