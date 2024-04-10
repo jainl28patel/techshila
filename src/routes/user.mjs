@@ -18,7 +18,7 @@ const isValidUser = async (req, res, next) => {
 
   let user = await usersModel.findOne({ email: email });
 
-  if (user.role == "customer") {
+  if (isValidRole(user.role)) {
     next();
   } else {
     res.send("invalid user");
@@ -111,11 +111,51 @@ router.post("/signup", async (req, res) =>{
         console.log(error);
         res.sendStatus(400);
     } 
-
 })
 
 
-router.get("/dashboard", async (req, res) =>{
+router.get("/dashboard", isValidUser, async (req, res) =>{
     res.send("dashboard").status(200)
 })
+
+router.post("/change-password", isValidUser, async( req, res) =>{
+    let password = req.body.password
+    let confirm_password = req.body.confirm_password
+
+    if(!password || !confirm_password){
+        res.send("missing fields").status(400);
+        return;
+    }
+    
+    if(password !== confirm_password){
+        res.send("password and confirm password do not match").status(400);
+        return;
+    }
+
+    let update = await usersModel.findOneAndUpdate(
+        { email: email }, 
+        {$set: {password: getHash(password)}},
+        {new: true})
+    
+    if(update){
+        res.status(200).send("Successful")
+    }else{
+        res.status(500).send("Intenal Server Error")
+    }
+})
+
+router.post("/delete-user", isValidUser, async( req, res) =>{
+    let email = jwt.verify(token, process.env.JWT_SECRET).email;
+    
+    usersModel.findOneAndDelete({ email: email }, (err, deletedUser) => {
+        if (err) {
+        res.status(500).send("Intenal Server Error")
+        } else if (!deletedUser) {
+        res.status(500).send("User not found");
+        } else {
+        res.status(200).send("Successful");
+        }
+      });
+})
+
 export default router;
