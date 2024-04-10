@@ -1,0 +1,49 @@
+.stores {
+    width: 80vw;
+    height: 85vh;
+    .stores-header {
+      font-family: SF Pro Display;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 36px;
+      text-align: left;
+    }
+    .table {
+      width: 100%;
+    }
+    .store-create {
+      border-radius: 5px;
+    }
+    .stores-table {
+      width: 100%;
+    }
+    .store-text {
+      //styleName: Heading 6;
+      font-family: SF Pro Text;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 30px;
+      text-align: left;
+    }
+    .store-search {
+      width: 50%;
+      padding: 5px 20px;
+    }
+    .stores-pagiantion {
+      display: flex;
+      /* From https://css.glass */
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      align-items: center;
+      font-size: 16px;
+      width: 100%;
+      font-weight: 400;
+      font-weight: 200;
+      line-height: 16.71px;
+      text-align: left;
+    }
+  }
