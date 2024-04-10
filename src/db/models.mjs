@@ -66,11 +66,15 @@ const sales = new Schema(
 const stores = new Schema(
   {
     manager_id: String,
+    manager_name: String,
+    manager_contact: String,
+    store_name: String,
     inventory: [
       {
         med_id: String,
         quantity: Number,
         qty_sold: Number,
+        qty_ordered: Number,
       },
     ],
     location: {

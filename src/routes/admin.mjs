@@ -88,4 +88,68 @@ router.post("/add-medicine", isAdmin, async (req, res) => {
     }  
 })
 
+router.get("stores", isAdmin, async (req, res) => {
+    // return {store_name, store_id, manager_name, manager_contact, sales, ordered}
+    try {
+        let stores = await storesModel.find();
+        let response = []
+        stores.forEach(store => {
+            let sales = 0;
+            let ordered = 0;
+            store.inventory.forEach(med => {
+                sales += med.qty_sold;
+                ordered += med.qty_ordered;
+            })
+            response.push({
+                store_name: store.store_name,
+                store_id: store._id,
+                manager_name: store.manager_name,
+                manager_contact: store.manager_contact,
+                sales: sales,
+                ordered: ordered
+            })
+        })
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(403);
+    }
+})
+
+router.get("/medicines", isAdmin, async (req, res) => {
+    if (!req.begin_date || !req.end_date) {
+        return res.send("bad request").status(400)
+    }
+    try {
+        let medicines = await medicinesModel.find();
+        let medicineSales = await salesModel.find({
+            date: {
+                $gte: req.begin_date,
+                $lte: req.end_date
+            }
+        });
+        let response = []
+        medicines.forEach(med => {
+            let sales = 0;
+            medicineSales.forEach(sale => {
+                sale.sale_details.forEach(saleDetail => {
+                    if (saleDetail.medicine_id === med._id) {
+                        sales += saleDetail.quantity;
+                    }
+                })
+            })
+            response.push({
+                name: med.name,
+                desc: med.desc,
+                stock_quantity: med.stock_quantity,
+                sales: sales
+            })
+        })
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(403);
+    }
+})
+
 export default router;
