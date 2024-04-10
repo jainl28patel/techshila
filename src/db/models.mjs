@@ -67,7 +67,13 @@ const inventory = new Schema(
       state: String,
     },
     manager_id: String,
-    medicines: [medicine],
+    medicines: [{
+      medicine: medicine,
+      qty_available: Number,
+      qty_ordered: Number,
+      qty_sold: Number,
+      batch_id: String,
+    }],
     sales: Number,
     ordered: Number,
   },
@@ -81,10 +87,10 @@ const medicine = new Schema(
     name: String,
     desc: String,
     expiry_date: Date,
-    qty_available: Number,
-    qty_ordered: Number,
     price: Number,
-    batch_id: String,
+    qty_available: Number,  // total quantity available in all batches
+    qty_sold: Number,      // total quantity sold
+    qty_ordered: Number,  // total quantity ordered
   },
   {
     collection: "medicines",
@@ -95,7 +101,6 @@ const batch = new Schema(
   {
     batch_id: String,
     expiry_date: Date,
-    medicines: [medicine],
   },
   {
     collection: "batches",

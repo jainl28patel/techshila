@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-import { usersModel, storesModel, salesModel, medicinesModel, ordersModel } from "../db/models.mjs";
+import { usersModel, storesModel, salesModel, medicinesModel, ordersModel, managerModel, inventoryModel } from "../db/models.mjs";
 import { findUserByMail, findUserByPhone, isValidEmail, isValidCoordinates } from "./utils.mjs";
 
 
@@ -30,84 +30,58 @@ const isAdmin = async (req, res, next) => {
 
 router.post("/create-new-store", isAdmin, async (req, res)=>{
     let manager_mail = req.body.manager_mail
-    let location_name = req.body.location_name
+    let name = req.body.name
+    let city = req.body.city
+    let state = req.body.state
     let location_lat = req.body.location_lat
     let location_long = req.body.location_long
 
-    if(!manager_mail || !location_name || !location_lat || !location_long || !isValidEmail(manager_mail) || !isValidCoordinates(location_lat,location_long)){
+    if(!name || !manager_mail || !city || !state || !location_lat || !location_long || !isValidEmail(manager_mail) || !isValidCoordinates(location_lat,location_long)){
         return res.send("bad request").status(400)
     }
     
-    let manager = findUserByMail(manager_mail)
-    if(manager.role !== "manager"){
-        return res.send("mail not affiliated with any manager").status(400)
+    let manager = await managerModel.findOne({email: manager_mail});
+    if(!manager) {
+        return res.send("manager not found").status(404)
     }
 
-    // new db entry
-    let newEntry = new storesModel({
-        manager_id: manager._id,
-        inventory: [],
-        location:{
-            name: location_name,
+    let newStore = new inventoryModel({
+        location: {
             latitude: location_lat,
             longitude: location_long,
-        }
+            city: city,
+            state: state
+        },
+        manager_id: manager._id,
+        medicines: [],
+        sales: 0,
+        ordered: 0
     });
 
     try {
-        newEntry.save();
+        newStore.save();
         res.sendStatus(200);
     } catch (error) {
         console.log(error);
         res.sendStatus(403);
     }
-})
-
-router.post("/add-medicine", isAdmin, async (req, res) => {
-    let name = req.body.medicine_name
-    let desc = req.body.medicine_name
-    let stock_quantity = req.body.stock_quantity  
-    
-    if(!name || !desc || !stock_quantity || (typeof stock_quantity !== "number") ){
-        return res.send("bad request").status(400)
-    }
-    
-    // new db entry
-    let newEntry = new medicinesModel({
-        name: name,
-        desc: desc,
-        stock_quantity: stock_quantity
-    });
-    
-    try {
-        newEntry.save();
-        res.sendStatus(200);
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(403);
-    }  
 })
 
 router.get("stores", isAdmin, async (req, res) => {
     // return {store_name, store_id, manager_name, manager_contact, sales, ordered}
     try {
-        let stores = await storesModel.find();
-        let response = []
-        stores.forEach(store => {
-            let sales = 0;
-            let ordered = 0;
-            store.inventory.forEach(med => {
-                sales += med.qty_sold;
-                ordered += med.qty_ordered;
-            })
+        let stores = await inventoryModel.find();
+        let response = [];
+        stores.forEach(store => async () => {
+            let manager = await managerModel.findById(store.manager_id);
             response.push({
-                store_name: store.store_name,
+                store_name: store.name,
                 store_id: store._id,
-                manager_name: store.manager_name,
-                manager_contact: store.manager_contact,
-                sales: sales,
-                ordered: ordered
-            })
+                manager_name: manager.name,
+                manager_contact: manager.phone,
+                sales: store.sales,
+                ordered: store.ordered
+            });
         })
         res.send(response);
     } catch (error) {
@@ -122,27 +96,13 @@ router.get("/medicines", isAdmin, async (req, res) => {
     }
     try {
         let medicines = await medicinesModel.find();
-        let medicineSales = await salesModel.find({
-            date: {
-                $gte: req.begin_date,
-                $lte: req.end_date
-            }
-        });
-        let response = []
+        let response = [];
         medicines.forEach(med => {
-            let sales = 0;
-            medicineSales.forEach(sale => {
-                sale.sale_details.forEach(saleDetail => {
-                    if (saleDetail.medicine_id === med._id) {
-                        sales += saleDetail.quantity;
-                    }
-                })
-            })
             response.push({
+                id: med._id,
                 name: med.name,
-                desc: med.desc,
-                stock_quantity: med.stock_quantity,
-                sales: sales
+                sales: med.qty_sold,
+                ordered: med.qty_ordered
             })
         })
         res.send(response);
@@ -155,27 +115,18 @@ router.get("/medicines", isAdmin, async (req, res) => {
 router.get("/dashboard", isAdmin, async (req, res) => {
     // return {no_of_stores, no_of_medicines, total_sales, total_ordered}
     try {
-        let stores = await storesModel.find();
-        let medicines = await medicinesModel.find();
-        let order = await ordersModel.find();
-        let response = {
-            no_of_stores: stores.length,
-            no_of_medicines: medicines.length,
-            total_sales: 0,
-            total_ordered: 0
-        }
+        let stores = await inventoryModel.find();
+        let sales = 0;
+        let ordered = 0;
         stores.forEach(store => {
-            store.inventory.forEach(med => {
-                response.total_ordered += med.qty_ordered;
-                response.total_sales += med.qty_sold;
-            })
+            sales += store.sales;
+            ordered += store.ordered;
         })
-        // order.forEach(order => {
-        //     order.order.order_medicines.forEach(orderDetail => {
-        //         response.total_sales += orderDetail.quantity;
-        //     })
-        // })
-        res.send(response);
+        res.send({
+            no_of_stores: stores.length,
+            total_sales: sales,
+            total_ordered: ordered
+        })
     } catch (error) {
         console.log(error);
         res.sendStatus(403);
