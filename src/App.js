@@ -8,6 +8,7 @@ import Medicines from './components/Medicines/Medicines';
 import Inventory from './components/Inventory/Inventory';
 import Medication from './components/Medication/Medication';
 import User from "./components/user/User";
+import Signuplogin from './components/Signuplogin/Signuplogin';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/inventory" element={<Inventory/>}/>
         </Route>
         <Route path="/user" element={<User />} />
+        <Route path="/signuplogin" element={<Signuplogin/>} />
       </Routes>
     </BrowserRouter>
   );
