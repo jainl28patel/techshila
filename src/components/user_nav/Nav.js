@@ -8,7 +8,7 @@ function Nav() {
         <span className="font-semibold text-[18px] tracking-tight ml-2">
           MIM web
         </span>
-        <div className="mx-8 text-sm">400001, Mumbai</div>
+        <div className="mx-8 text-sm">400002, Mumbai</div>
       </div>
       <div className="flex items-center">
         <div className="mx-8 text-sm">Order Status</div>
