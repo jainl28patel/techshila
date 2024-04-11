@@ -1,6 +1,7 @@
 .stores {
   width: 80vw;
   height: 85vh;
+  overflow-y: auto;
   margin-left: 3vw;
   margin-top: 3vh;
   .stores-header {
@@ -37,14 +38,15 @@
     background: rgba(255, 255, 255, 0.2);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     align-items: center;
     font-size: 16px;
     width: 100%;
     font-weight: 400;
     font-weight: 200;
+
     line-height: 16.71px;
     text-align: left;
   }

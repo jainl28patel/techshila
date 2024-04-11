@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../Stores/Stores.scss";
+import Select from "react-select";
 
 const Medicines = () => {
   const nodes = [
@@ -76,6 +77,11 @@ const Medicines = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   let data = { nodes: currentItems };
   console.log(currentItems, filteredNodes);
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
   return (
     <div className="stores">
       <h1 className="stores-header">Medicines Page</h1>
@@ -88,6 +94,32 @@ const Medicines = () => {
           placeholder="Search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <div className=" flex p-3 gap-10">
+        <Select
+          className="w-40"
+          classNamePrefix="select"
+          defaultValue={options[0]}
+          isSearchable={true}
+          name="color"
+          options={options}
+        />
+        <Select
+          className="w-40"
+          classNamePrefix="select"
+          defaultValue={options[0]}
+          isSearchable={true}
+          name="color"
+          options={options}
+        />
+        <Select
+          className="w-40"
+          classNamePrefix="select"
+          defaultValue={options[0]}
+          isSearchable={true}
+          name="color"
+          options={options}
         />
       </div>
       <div className="table">
