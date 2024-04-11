@@ -49,10 +49,7 @@ const isValidUser = async (req, res, next) => {
 router.post("/login", async (req, res) => {
   let data = req.body;
 
-  if (
-    !data.email ||
-    !data.password 
-  ) {
+  if (!data.email || !data.password) {
     res.status(403).send("invalid data");
     return;
   }
@@ -64,6 +61,7 @@ router.post("/login", async (req, res) => {
         // generate token
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
         res.cookie("token", token, {
+          sameSite: "Lax",
           httpOnly: true,
           maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         });
@@ -78,61 +76,67 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  let name = req.body.name;
-  let email = req.body.email;
-  let contact = req.body.contact;
-  let password = req.body.password;
-  let confirm_password = req.body.confirm_password;
-  
-
-  if (!name || !email || !contact || !password || !confirm_password ) {
-    res.send("missing fields").status(400);
-    return;
-  }
-
-  if (password !== confirm_password) {
-    res.send("password and confirm password do not match").status(400);
-    return;
-  }
-
-  if (typeof contact !== "number") {
-    res.send("bad request").status(400);
-    return;
-  }
-
-  let userEmail = await findUserByMail(email);
-  let userPhone = await findUserByPhone(contact);
-
-  if (userEmail) {
-    res.send("Email already in use").status(400);
-    return;
-  }
-
-  if (userPhone) {
-    res.send("Phone number already in use").status(400);
-    return;
-  }
-
-  let newEntry = new userModel({
-    name: name,
-    email: email,
-    contact: contact,
-    password: await getHash(password),
-    order_history: [],
-    location: {
-      latitude: 0,
-      longitude: 0
-    }
-  });
-
   try {
-    newEntry.save();
-    const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    console.log(req);
+    let name = req.body.name;
+    let email = req.body.email;
+    let contact = req.body.contact;
+    let password = req.body.password;
+    let confirm_password = req.body.confirm_password;
+
+    if (!name || !email || !contact || !password || !confirm_password) {
+      res.send("missing fields").status(400);
+      return;
+    }
+
+    if (password !== confirm_password) {
+      res.send("password and confirm password do not match").status(400);
+      return;
+    }
+
+    if (typeof contact !== "number") {
+      res.send("bad request").status(400);
+      return;
+    }
+
+    let userEmail = await findUserByMail(email);
+    let userPhone = await findUserByPhone(contact);
+
+    if (userEmail) {
+      res.send("Email already in use").status(400);
+      return;
+    }
+
+    if (userPhone) {
+      res.send("Phone number already in use").status(400);
+      return;
+    }
+
+    let newEntry = new userModel({
+      name: name,
+      email: email,
+      contact: contact,
+      password: await getHash(password),
+      order_history: [],
+      location: {
+        latitude: 0,
+        longitude: 0,
+      },
     });
-    res.status(200).send("successful")
+
+    try {
+      newEntry.save();
+      const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
+      res.cookie("token", token, {
+        sameSite: "Lax",
+          httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
+      res.status(200).send("successful");
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(400);
+    }
   } catch (error) {
     console.log(error);
     res.sendStatus(400);
@@ -175,12 +179,12 @@ router.post("/change-password", isValidUser, async (req, res) => {
 router.post("/delete-user", isValidUser, async (req, res) => {
   try {
     let email = getEmail(req);
-    let deletd_user = await userModel.deleteOne({ email: email }) ;
-  
-    if(deletd_user){
-      res.status(200).send("success")
-    }else{
-      res.status(400).send("unsuccessful")
+    let deletd_user = await userModel.deleteOne({ email: email });
+
+    if (deletd_user) {
+      res.status(200).send("success");
+    } else {
+      res.status(400).send("unsuccessful");
     }
   } catch (error) {
     console.log(err);
@@ -191,12 +195,7 @@ router.post("/delete-user", isValidUser, async (req, res) => {
 // getters
 
 router.get("/search", async (req, res) => {
-  let name = req.query.name;
-  if(name){
-    let data = await medicineModel.find({ $text: { $search: name } });
-  }else{
-    let data = await medicineModel.find();
-  }
+  let data = await medicineModel.find();
 
   if (data) {
     res.status(200).send(data);
@@ -318,17 +317,17 @@ router.post("/place-order", isValidUser, async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(400).send(err);
-}
+  }
 });
 
-router.get("/store-details",isValidUser, async(req, res) =>{
-    try {
-        let stores = await inventoryModel.find()
-        res.status(200).send(stores)
-    } catch (err) {
-        console.log(err);
-        res.status(400).send(err);
-    }
-})
+router.get("/store-details", isValidUser, async (req, res) => {
+  try {
+    let stores = await inventoryModel.find();
+    res.status(200).send(stores);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+});
 
 export default router;

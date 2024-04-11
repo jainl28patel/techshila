@@ -10,10 +10,14 @@ import user from "./src/routes/user.mjs";
 const PORT = process.env.PORT || 4000;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin:"http://10.81.38.59:3000",
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
 app.use(express.json());
 
-// Routes
+// Routes   
 app.use("/admin", admin);
 app.use("/manager", manager);
 app.use("/user", user);

@@ -4,31 +4,112 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 import { userModel,medicineModel, managerModel, inventoryModel, adminModel } from "../db/models.mjs";
-import {  isValidEmail, isValidCoordinates } from "./utils.mjs";
+import {  isValidEmail, isValidCoordinates, getHash, compareHashedPassword } from "./utils.mjs";
 
 
 const isAdmin = async (req, res, next) => {
     next();
-    // // get jwt from header
-    // let token = req.headers.cookie?.split("token=")[1];
-    // if(!token) {
-    //     res.sendStatus(403);
-    //     return;
-    // }
+    // get jwt from header
+    let token = req.headers.cookie?.split("token=")[1];
+    if(!token) {
+        res.sendStatus(403);
+        return;
+    }
     
-    // let email = jwt.verify(token, process.env.JWT_SECRET).email;
+    let email = jwt.verify(token, process.env.JWT_SECRET).email;
 
-    // let user = await adminModel.findOne({email: email});
+    let user = await adminModel.findOne({email: email});
     
-    // if(!user) {
-    //     res.sendStatus(403);
-    //     return;
-    // } else {
-    //     next();
-    // }
+    if(!user) {
+        res.sendStatus(403);
+        return;
+    } else {
+        next();
+    }
 }
 
+router.post("/login", async (req, res) => {
+    let data = req.body;
+    if (
+      !data.email ||
+      !data.password 
+    ) {
+      res.status(403).send("invalid data");
+      return;
+    }
+    // check if user already exists
+    let user = await adminModel.findOne({ email: data.email });
+    if (user) {
+      if (compareHashedPassword(data.password, user.password)) {
+        if (!req.headers.cookie?.split("token=")[1]) {
+          // generate token
+          const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+          res.cookie("token", token, {
+            sameSite: "Lax",
+          httpOnly: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+          });
+        }
+        res.send({ status: "success" });
+      } else {
+        res.sendStatus(403);
+      }
+    } else {
+      res.sendStatus(403);
+    }
+  });
 
+router.post("/signup", async (req, res) => {
+    let name = req.body.name;
+    let email = req.body.email;
+    let contact = req.body.contact;
+    let password = req.body.password;
+  
+    if (!name || !email || !contact || !password ) {
+      res.send("missing fields").status(400);
+      return;
+    }
+  
+    if (typeof contact !== "number") {
+      res.send("bad request").status(400);
+      return;
+    }
+  
+    let userEmail = await adminModel.findOne({ email:email });
+    let userPhone = await adminModel.findOne({ contact: contact });
+  
+    if (userEmail) {
+      res.send("Email already in use").status(400);
+      return;
+    }
+  
+    if (userPhone) {
+      res.send("Phone number already in use").status(400);
+      return;
+    }
+  
+    let newEntry = new adminModel({
+      name: name,
+      email: email,
+      contact: contact,
+      password: await getHash(password)
+    });
+  
+    try {
+      newEntry.save();
+      const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
+      res.cookie("token", token, {
+        sameSite: "Lax",
+          httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
+      res.status(200).send("successful")
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(400);
+    }
+  });
+  
 router.post("/create-new-store", isAdmin, async (req, res)=>{
     let manager_mail = req.body.manager_mail
     let name = req.body.name
