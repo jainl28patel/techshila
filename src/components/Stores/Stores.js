@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Stores.scss";
 import avatar from "../../assets/Avatar.svg";
 // import { Select, Space } from "antd";
 import Select from "react-select";
+import StoreForm from "./StoreForm";
 
 const Stores = () => {
   const nodes = [
@@ -141,22 +142,33 @@ const Stores = () => {
     // Add more nodes as needed
   ];
 
+  const [data1, setData1] = useState([]);
+  const [create, setCreate] = useState(false);
+  useEffect(() => {
+    fetch(`http://10.81.25.126:4000/admin/stores`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setData1(data);
+      });
+  }, [create]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
   // Filter data based on search term
-  const filteredNodes = nodes.filter((node) =>
-    node.store_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredNodes = data1?.filter((node) =>
+    node?.store_name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
-
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredNodes.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   let data = { nodes: currentItems };
-  console.log(currentItems, filteredNodes);
+  // console.log(currentItems, filteredNodes);
   const options = [
     { value: "chocolate", label: "Chocolate" },
     { value: "strawberry", label: "Strawberry" },
@@ -177,6 +189,7 @@ const Stores = () => {
         />
         <span
           className=" text-white store-create "
+          onClick={() => setCreate(true)}
           style={{ padding: "5px 40px", background: "#303F9F" }}
         >
           Create New Store
@@ -244,26 +257,26 @@ const Stores = () => {
                     >
                       {el.store_id}
                     </th>
-                    <td class="px-6 py-2 text-gray-800">{el.store_name}</td>
+                    <td class="px-6 py-2 text-gray-800">{el?.store_name}</td>
                     <td class="px-6 py-2 text-gray-800">{el.sales}</td>
                     <td class="px-6 py-2 text-gray-800">{el.oderered}</td>
                     <td class="px-6 py-2 text-gray-800">
                       <div className="flex items-center px-1">
-                        <img src={el.store_manager.img} />
+                        <img src={avatar} />
                         <div className="flex flex-col px-3">
-                          <span>{el.store_manager.name}</span>
-                          <span>{el.store_manager.team}</span>
+                          <span>{el.manager_name}</span>
                         </div>
                       </div>
                     </td>
-                    <td class="px-6 py-2 text-gray-800">{el.contact}</td>
+                    <td class="px-6 py-2 text-gray-800">
+                      {el.manager_contact}
+                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-
         {/* Pagination UI */}
         <div className="pagination flex justify-end pr-10 py-2 stores-pagiantion absolute bottom-0 z-10 right-0 ">
           page {currentPage} of{" "}
@@ -284,6 +297,7 @@ const Stores = () => {
           </button>
         </div>
       </div>
+      {create && <StoreForm setCreate={setCreate} create={create} />}
     </div>
   );
 };

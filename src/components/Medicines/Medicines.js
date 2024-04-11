@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Stores/Stores.scss";
 import Select from "react-select";
 
@@ -60,14 +60,25 @@ const Medicines = () => {
     },
     // Add more nodes as needed
   ];
+  useEffect(() => {
+    fetch(`http://10.81.25.126:4000/admin/medicines`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setData1(data);
+      });
+  }, []);
+  const [data1, setData1] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
   // Filter data based on search term
-  const filteredNodes = nodes.filter((node) =>
-    node.Medicine_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredNodes = data1.filter((node) =>
+    node?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Pagination logic
@@ -150,11 +161,11 @@ const Medicines = () => {
                       scope="row"
                       class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap "
                     >
-                      {el.med_id}
+                      {el.id}
                     </th>
-                    <td class="px-6 py-4 text-gray-800">{el.Medicine_name}</td>
-                    <td class="px-6 py-4 text-gray-800">{el.Sales}</td>
-                    <td class="px-6 py-4 text-gray-800">{el.Ordered}</td>
+                    <td class="px-6 py-4 text-gray-800">{el.name}</td>
+                    <td class="px-6 py-4 text-gray-800">{el.sales}</td>
+                    <td class="px-6 py-4 text-gray-800">{el.ordered}</td>
                   </tr>
                 );
               })}
