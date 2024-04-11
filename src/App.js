@@ -5,6 +5,8 @@ import Layout from './components/Layout/Layout';
 import Mainpage from './components/Mainpage/Mainpage';
 import Stores from './components/Stores/Stores';
 import Medicines from './components/Medicines/Medicines';
+import Inventory from './components/Inventory/Inventory';
+import Medication from './components/Medication/Medication';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route index element = {<Mainpage/>} />
           <Route path="/stores" element = {<Stores/>} />
           <Route path="/medicines" element = {<Medicines/>} />
+          <Route path="/medication" element={<Medication/>}/>
+          <Route path="/inventory" element={<Inventory/>}/>
 
           
         </Route>
