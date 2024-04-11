@@ -142,18 +142,17 @@ const Medication = () => {
     },
     // Add more nodes as needed
   ];
-  const med_body = { email: "gg@gmail.com" };
   useEffect(() => {
     fetch(`http://10.81.25.126:4000/manager/medicines`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: "gg@gmail.com" }), // Convert object to JSON string
+      body: JSON.stringify({ email: localStorage.email }), // Convert object to JSON string
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         return res.json();
       })
@@ -162,10 +161,10 @@ const Medication = () => {
         setData1(data);
       })
       .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
+        console.error("There was a problem with the fetch operation:", error);
       });
   }, []);
-  
+
   const [data1, setData1] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
