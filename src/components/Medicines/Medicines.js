@@ -107,32 +107,7 @@ const Medicines = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      <div className=" flex p-3 gap-10">
-        <Select
-          className="w-40"
-          classNamePrefix="select"
-          defaultValue={options[0]}
-          isSearchable={true}
-          name="color"
-          options={options}
-        />
-        <Select
-          className="w-40"
-          classNamePrefix="select"
-          defaultValue={options[0]}
-          isSearchable={true}
-          name="color"
-          options={options}
-        />
-        <Select
-          className="w-40"
-          classNamePrefix="select"
-          defaultValue={options[0]}
-          isSearchable={true}
-          name="color"
-          options={options}
-        />
-      </div>
+      
       <div className="table">
         <div class="relative overflow-x-auto">
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
