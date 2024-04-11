@@ -1,10 +1,73 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = ({ setAuthStatus }) => {
+const Login =  ({ setAuthStatus }) => {
+    const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin =async (e) => {
+    e.preventDefault()
+    let userDetails = {
+      email: email,
+      password: password,
+    };
+
+    let response1 = await fetch(process.env.REACT_APP_URL + "/admin/login", {
+        credentials: 'include',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      })
+        .then((response) => {
+          if (response.ok) {
+            navigate("/");
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other errors
+          console.error("Fetch error:", error);
+        });
+    let response2 = await fetch(process.env.REACT_APP_URL + "/manager/login", {
+        credentials: 'include',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      })
+        .then((response) => {
+          if (response.ok) {
+            navigate("/medication");
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other errors
+          console.error("Fetch error:", error);
+        });
+    let response3 = await fetch(process.env.REACT_APP_URL + "/user/login", {
+        credentials: 'include',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      })
+        .then((response) => {
+          if (response.ok) {
+            navigate("/user");
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other errors
+          console.error("Fetch error:", error);
+        });
+
     // Handle login logic here
     console.log("Email:", email);
     console.log("Password:", password);
@@ -20,7 +83,7 @@ const Login = ({ setAuthStatus }) => {
             Log in
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        <form className="mt-8 space-y-6" onSubmit={(e) => handleLogin(e)}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -81,15 +144,109 @@ const Login = ({ setAuthStatus }) => {
 };
 
 const SignUp = ({ setAuthStatus }) => {
+
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("user");
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
   const [address, setAddress] = useState("");
+  console.log("1")
+//   console.log(process.env.REACT_APP_URL, "hehlkj")
+  const handleSignUp = async (e) => {
+    e.preventDefault()
+    console.log("2")
+    console.log(process.env.REACT_APP_URL, "3")
+    let userDetails = {
+      name: name,
+      email: email,
+      password: password,
+      confirm_password: confirmPassword,
+      contact: phoneNumber,
+    };
+    let adminDetails = {
+      name: name,
+      email: email,
+      password: password,
+      contact: phoneNumber,
+    };
+    let managerDetails = {
+      name: name,
+      email: email,
+      password: password,
+      contact: phoneNumber,
+    };
 
-  const handleSignUp = () => {
+    if (role === "user") {
+      let response = await fetch(process.env.REACT_APP_URL + "/user/signup", {
+        credentials: 'include',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      })
+        .then((response) => {
+          if (response.ok) {
+            navigate("/user");
+          } else {
+            // Handle errors based on status code
+            console.error("Request failed with status code " + response.status);
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other errors
+          console.error("Fetch error:", error);
+        });
+    } else if (role === "inventory-manager") {
+      let response = await fetch(process.env.REACT_APP_URL + "/manager/signup", {
+        credentials: 'include',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify(managerDetails),
+      })
+        .then((response) => {
+          if (response.ok) {
+            navigate("/medication");
+          } else {
+            // Handle errors based on status code
+            console.error("Request failed with status code " + response.status);
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other errors
+          console.error("Fetch error:", error);
+        });
+    } else if (role === "store-owner") {
+      let response = await fetch(process.env.REACT_APP_URL + "/admin/signup", {
+        credentials: 'include',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify(adminDetails),
+      })
+        .then((response) => {
+          if (response.ok) {
+            navigate("/");
+          } else {
+            // Handle errors based on status code
+            console.error("Request failed with status code " + response.status);
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other errors
+          console.error("Fetch error:", error);
+        });
+    }
+
     // Handle sign up logic here
     console.log("Email:", email);
     console.log("Password:", password);
@@ -109,7 +266,7 @@ const SignUp = ({ setAuthStatus }) => {
             Sign up
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
+        <form className="mt-8 space-y-6" onSubmit={(e)=> handleSignUp(e)}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -187,7 +344,7 @@ const SignUp = ({ setAuthStatus }) => {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Phone Number"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => setPhoneNumber(Number(e.target.value))}
               />
             </div>
             <div>
@@ -265,6 +422,7 @@ const SignUp = ({ setAuthStatus }) => {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+
             >
               Sign up
             </button>

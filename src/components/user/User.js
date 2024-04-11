@@ -114,8 +114,7 @@ const RightPart = () => {
       description:
         "Sweetneer Poweder dslfjsldjfljsosdfhkjshdfkhdksdsfhsdjfhkhiwehi lorem djfsoifefdljfoisefjjofhki",
       mrp: 100,
-      discountedPrice: 80,
-      discount: 20,
+    
     },
     {
       id: 2,
@@ -123,8 +122,7 @@ const RightPart = () => {
       imageUrl: "/images/Screenshot 2024-04-11 181140.png",
       description: "Gives you all the energy you want",
       mrp: 120,
-      discountedPrice: 100,
-      discount: 16.67,
+
     },
     // Add more sample products as needed
   ];
@@ -206,12 +204,7 @@ const RightPart = () => {
                       MRP:{" "}
                       <span className="line-through">Rs. {product.mrp}</span>
                     </p>
-                    <p>
-                      Discounted Price: Rs. {product.discountedPrice}{" "}
-                      <span className="text-[#D01717]">
-                        ({product.discount}%)
-                      </span>
-                    </p>
+                     
                   </div>
                 ))}
               </div>
@@ -243,12 +236,7 @@ const RightPart = () => {
                       MRP:{" "}
                       <span className="line-through">Rs. {product.mrp}</span>
                     </p>
-                    <p>
-                      Discounted Price: Rs. {product.discountedPrice}{" "}
-                      <span className="text-[#D01717]">
-                        ({product.discount}%)
-                      </span>
-                    </p>
+                     
                   </div>
                 ))}
               </div>
@@ -280,12 +268,7 @@ const RightPart = () => {
                       MRP:{" "}
                       <span className="line-through">Rs. {product.mrp}</span>
                     </p>
-                    <p>
-                      Discounted Price: Rs. {product.discountedPrice}{" "}
-                      <span className="text-[#D01717]">
-                        ({product.discount}%)
-                      </span>
-                    </p>
+                     
                   </div>
                 ))}
               </div>
@@ -316,12 +299,7 @@ const RightPart = () => {
                       MRP:{" "}
                       <span className="line-through">Rs. {product.mrp}</span>
                     </p>
-                    <p>
-                      Discounted Price: Rs. {product.discountedPrice}{" "}
-                      <span className="text-[#D01717]">
-                        ({product.discount}%)
-                      </span>
-                    </p>
+                     
                   </div>
                 ))}
               </div>
