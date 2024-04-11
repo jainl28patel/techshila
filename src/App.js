@@ -7,6 +7,7 @@ import Stores from './components/Stores/Stores';
 import Medicines from './components/Medicines/Medicines';
 import Inventory from './components/Inventory/Inventory';
 import Medication from './components/Medication/Medication';
+import User from "./components/user/User";
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
           <Route path="/inventory" element={<Inventory/>}/>
 
           
-        </Route>
 
+        </Route>
+        <Route path="/user" element={<User />} />
       </Routes>
     </BrowserRouter>
   );

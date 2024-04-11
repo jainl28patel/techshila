@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Stores.scss";
 import avatar from "../../assets/Avatar.svg";
 // import { Select, Space } from "antd";
+import Select from "react-select";
 
 const Stores = () => {
   const nodes = [
@@ -156,6 +157,11 @@ const Stores = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   let data = { nodes: currentItems };
   console.log(currentItems, filteredNodes);
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
   return (
     <div className="stores">
       <h1 className="stores-header">Stores</h1>
@@ -176,17 +182,31 @@ const Stores = () => {
           Create New Store
         </span>
       </div>
-      <div className="">
-        {/* <Select
-          defaultValue="lucy"
-          style={{ width: 120 }}
-          options={[
-            { value: "jack", label: "Jack" },
-            { value: "lucy", label: "Lucy" },
-            { value: "Yiminghe", label: "yiminghe" },
-            { value: "disabled", label: "Disabled", disabled: true },
-          ]}
-        /> */}
+      <div className=" flex p-3 gap-10">
+        <Select
+          className="w-40"
+          classNamePrefix="select"
+          defaultValue={options[0]}
+          isSearchable={true}
+          name="color"
+          options={options}
+        />
+        <Select
+          className="w-40"
+          classNamePrefix="select"
+          defaultValue={options[0]}
+          isSearchable={true}
+          name="color"
+          options={options}
+        />
+        <Select
+          className="w-40"
+          classNamePrefix="select"
+          defaultValue={options[0]}
+          isSearchable={true}
+          name="color"
+          options={options}
+        />
       </div>
       <div className="table">
         <div class="relative overflow-x-auto">
