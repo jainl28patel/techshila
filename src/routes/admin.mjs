@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-import { usersModel, storesModel, salesModel, medicinesModel, ordersModel, managerModel, inventoryModel } from "../db/models.mjs";
-import { findUserByMail, findUserByPhone, isValidEmail, isValidCoordinates } from "./utils.mjs";
+import { userModel,medicineModel, managerModel, inventoryModel } from "../db/models.mjs";
+import {  isValidEmail, isValidCoordinates } from "./utils.mjs";
 
 
 const isAdmin = async (req, res, next) => {
@@ -17,7 +17,7 @@ const isAdmin = async (req, res, next) => {
     
     let email = jwt.verify(token, process.env.JWT_SECRET).email;
 
-    let user = await usersModel.findOne({email: email});
+    let user = await userModel.findOne({email: email});
     
     if(user.role === "admin") {
         next();
@@ -95,7 +95,7 @@ router.get("/medicines", isAdmin, async (req, res) => {
         return res.send("bad request").status(400)
     }
     try {
-        let medicines = await medicinesModel.find();
+        let medicines = await medicineModel.find();
         let response = [];
         medicines.forEach(med => {
             response.push({

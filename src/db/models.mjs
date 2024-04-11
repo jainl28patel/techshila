@@ -33,7 +33,11 @@ const user = new Schema(
     email: String,
     contact: String,
     password: String,
-    order_history: [order]
+    order_history: [String],
+    location: {
+      latitude: Number,
+      longitude: Number
+    }
   },
   {
     collection: "users",
@@ -68,7 +72,7 @@ const inventory = new Schema(
     },
     manager_id: String,
     medicines: [{
-      medicine: medicine,
+      medicine_id: String,
       qty_available: Number,
       qty_ordered: Number,
       qty_sold: Number,

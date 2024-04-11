@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-import { usersModel, storesModel, salesModel, medicinesModel, inventoryModel } from "../db/models.mjs";
+import { medicinesModel, inventoryModel } from "../db/models.mjs";
 
 const isManager = async (req, res, next) => {
     // get jwt from header
@@ -15,7 +15,7 @@ const isManager = async (req, res, next) => {
     
     let email = jwt.verify(token, process.env.JWT_SECRET).email;
 
-    let user = await usersModel.findOne({email: email});
+    let user = await userModel.findOne({email: email});
     
     if(user.role == "manager") {
         next();

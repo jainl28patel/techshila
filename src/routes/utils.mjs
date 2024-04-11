@@ -1,5 +1,5 @@
-import { usersModel, storesModel, salesModel } from "../db/models.mjs";
-import bcrypt, { hash } from "bcrypt";
+import { userModel } from "../db/models.mjs";
+import bcrypt from "bcrypt";
 
 export const isValidEmail = (email) => {
   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -22,11 +22,11 @@ export const isValidCoordinates = (latitude, longitude) => {
 };
 
 export const findUserByMail = async (email) => {
-  return await usersModel.findOne({ email: email });
+  return await userModel.findOne({ email: email });
 };
 
 export const findUserByPhone = async (phone) => {
-  return await usersModel.findOne({ phone_number: phone });
+  return await userModel.findOne({ contact: phone });
 };
 
 export const isValidRole = (role) => {
