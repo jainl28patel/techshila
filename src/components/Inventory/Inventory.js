@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Stores/Stores.scss";
 import red from "../../assets/redDot.svg";
 import grey from "../../assets/greyDot.svg";
@@ -6,6 +6,104 @@ import yellow from "../../assets/yellowDot.svg";
 import green from "../../assets/greenDot.svg";
 import dots from "../../assets/DotsThreeVertical.svg";
 const Inventory = () => {
+  function InventoryForm({ setCreate, create }) {
+    const [newinventory, setnewinventory] = useState({
+      email: "",
+      medicine_name: "",
+      quantity: "",
+      batch_id: "",
+      expiry_date: new Date(),
+      price: "",
+    });
+    const handleChange = (e) => {
+      setnewinventory({ ...newinventory, [e.target.name]: e.target.value });
+    };
+    const handleSave = async () => {
+      const response = await fetch("http://10.81.25.126:4000/manager/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newinventory),
+      });
+      if (response.ok) {
+        console.log(newinventory);
+        setFormy(false);
+      }
+    };
+    return (
+      <div
+        className="flex w-[100vw] h-[100vh] d-flex justify-center items-center backdrop-blur-sm"
+        style={{ top: "0", left: "0", position: "fixed" }}
+      >
+        <div className=" rounded-[6px] border-2 px-6 py-6 bg-white">
+          {" "}
+          <div className=" flex justify-end">
+            <img
+              className="cursor-pointer"
+              src="\images\X.svg"
+              alt="X"
+              onClick={handleFormyChange}
+            />
+          </div>
+          <h1 className=" text-xl text-center font-extrabold">Create Inventory</h1>
+          <div className="flex flex-col w-[50vw] gap-2">
+            <label>Email</label>
+            <input
+              className=" border-2"
+              name="email"
+              value={newinventory.email}
+              onChange={(e) => handleChange(e)}
+            />
+            <label>Medicine Name</label>
+            <input
+              name="medicine_name"
+              className=" border-2"
+              value={newinventory.medicine_name}
+              onChange={(e) => handleChange(e)}
+            />
+            <label>Quantity</label>
+            <input
+              name="quantity"
+              className=" border-2"
+              value={newinventory.quantity}
+              onChange={(e) => handleChange(e)}
+            />
+            <label>Batch ID</label>
+            <input
+              name="batch_id"
+              className=" border-2"
+              value={newinventory.batch_id}
+              onChange={(e) => handleChange(e)}
+            />
+            <label>Expiry Date</label>
+            <input
+              className=" border-2"
+              name="expiry_date"
+              value={newinventory.expiry_date}
+              onChange={(e) => handleChange(e)}
+            />
+            <label>Price</label>
+            <input
+              className=" border-2"
+              name="price"
+              value={newinventory.price}
+              onChange={(e) => handleChange(e)}
+            />
+            <div className="w-full flex justify-end py-2">
+              <button
+                className=" bg-green-500 px-5 py-1 rounded-md text-white"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const nodes = [
     {
       id: "1",
@@ -174,7 +272,31 @@ const Inventory = () => {
     },
     // Add more nodes as needed
   ];
+  const med_body = { email: "bc@gmail.com" };
+  useEffect(() => {
+    fetch(`http://10.81.25.126:4000/manager/inventory`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: "bc@gmail.com" }), // Convert object to JSON string
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setData1(data);
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }, []);
 
+  const [data1, setData1] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -186,8 +308,14 @@ const Inventory = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [modal, setModal] = useState(false);
   const [Drop, setDrop] = useState({ state: true, id: "" });
+  const [formy, setFormy] = useState(false);
 
   const handleModalChange = () => {
+    setModal(!modal);
+  };
+
+  const handleFormyChange = () => {
+    setFormy(!formy);
     setModal(!modal);
   };
 
@@ -221,8 +349,8 @@ const Inventory = () => {
   };
 
   // Filter data based on search term
-  const filteredNodes = nodes.filter((node) =>
-    node.store_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredNodes = data1.filter((node) =>
+    node.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Pagination logic
@@ -263,8 +391,8 @@ const Inventory = () => {
         </button>
       </div>
       <div className="table">
-        <div class="relative overflow-x-auto">
-          <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
+        <div class="relative overflow-x-auto z-0 h-[66vh]">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 h-100">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
               <tr>
                 <th scope="col" class="px-6 py-5 font-light">
@@ -323,7 +451,7 @@ const Inventory = () => {
                         setDrop({ ...Drop, ["state"]: false });
                       }}
                     >
-                      {el.store_id}
+                      {el.id}
                     </th>
                     <td
                       class="px-6 py-2 text-gray-800"
@@ -331,7 +459,7 @@ const Inventory = () => {
                         setDrop({ ...Drop, ["state"]: false });
                       }}
                     >
-                      {el.store_name}
+                      {el.name}
                     </td>
                     <td
                       class="px-6 py-2 font-medium text-blue-700 whitespace-nowrap"
@@ -348,9 +476,9 @@ const Inventory = () => {
                       }}
                     >
                       <div className="flex items-center px-1">
-                        <img src={el.store_manager.img} />
+                        <img src={green} />
                         <div className="flex flex-col px-3">
-                          <span>{el.store_manager.name}</span>
+                          <span>{el.available}</span>
                           {/* <span>{el.store_manager.team}</span> */}
                         </div>
                       </div>
@@ -361,7 +489,7 @@ const Inventory = () => {
                         setDrop({ ...Drop, ["state"]: false });
                       }}
                     >
-                      {el.sales}
+                      {el.quantity}
                     </td>
                     <td
                       class="px-6 py-2 text-gray-800"
@@ -370,20 +498,19 @@ const Inventory = () => {
                       }}
                     >
                       <div className="flex items-center px-1">
-                        <img src={el.store_manager.img} />
+                        <img src={green} />
                         <div className="flex flex-col px-3">
-                          <span>{el.store_manager.name2}</span>
-                          <span>{el.store_manager.team}</span>
+                          <span>{el.quantity}</span>
                         </div>
                       </div>
                     </td>
                     <td
-                      class="px-6 py-2 text-gray-800"
+                      class="px-6 py-2 w-40 text-xs text-gray-800"
                       onClick={() => {
                         setDrop({ ...Drop, ["state"]: false });
                       }}
                     >
-                      {el.oderered}
+                      {el.expiry_date.slice(0, 10)}
                     </td>
                     <td class="px-6 py-2 text-gray-800 cursor-pointer">
                       <img
@@ -394,7 +521,7 @@ const Inventory = () => {
                         alt="dots"
                       />
                       {Drop.id === el.id && Drop.state && (
-                        <div className="flex absolute right-10">
+                        <div className="flex absolute right-10 z-30">
                           <div className="flex flex-col border rounded-[6px] border-2 px-4 py-3 bg-white ">
                             <div className="flex  text-[12px]">
                               <img
@@ -496,7 +623,10 @@ const Inventory = () => {
               <div className="flex items-center justify-center text-[18px] ">
                 or
               </div>
-              <div className="rounded-[6px] text-white text-[14px] bg-[#303F9F] border-2 border-[#7F56D9] py-4 my-2">
+              <div
+                className="rounded-[6px] text-white text-[14px] bg-[#303F9F] border-2 border-[#7F56D9] py-4 my-2"
+                onClick={handleFormyChange}
+              >
                 <div className="flex justify-center items-center">
                   Make a manual entry
                 </div>
@@ -505,9 +635,10 @@ const Inventory = () => {
           </div>
         </>
       )}
+
+      {formy && <InventoryForm />}
     </div>
   );
 };
 
 export default Inventory;
-
