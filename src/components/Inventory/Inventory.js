@@ -167,6 +167,27 @@ const Inventory = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(8);
+    const [isChecked, setIsChecked] = useState(false);
+    const [individualCheckboxes, setIndividualCheckboxes] = useState(
+        Array(nodes.length).fill(false)
+    );
+
+
+    const handleMainCheckboxChange = (event) => {
+        const isChecked = event.target.checked;
+        setIsChecked(isChecked);
+        setIndividualCheckboxes(
+            Array(nodes.length).fill(isChecked)
+        );
+    };
+
+    // Handle checking/unchecking of individual checkboxes
+    const handleCheckboxChange = (index) => {
+        const updatedCheckboxes = [...individualCheckboxes];
+        updatedCheckboxes[index] = !updatedCheckboxes[index];
+        setIndividualCheckboxes(updatedCheckboxes);
+        setIsChecked(updatedCheckboxes.every((checkbox) => checkbox));
+    };
 
     // Filter data based on search term
     const filteredNodes = nodes.filter((node) =>
@@ -207,7 +228,8 @@ const Inventory = () => {
                             <tr>
 
                                 <th scope="col" class="px-6 py-5 font-light">
-                                    <input type="checkbox" />
+                                    <input type="checkbox" id="mainCheck" checked={isChecked}
+                                        onChange={handleMainCheckboxChange} />
                                 </th>
                                 <th scope="col" class="px-6 py-5 font-light">
                                     Med ID
@@ -234,11 +256,13 @@ const Inventory = () => {
                         </thead>
                         {/* <hr style={{ width: "100%" }} /> */}
                         <tbody>
-                            {currentItems?.map((el) => {
+                            {currentItems?.map((el, index) => {
                                 return (
                                     <tr class="bg-white border-b">
                                         <th class="px-6 py-4 text-gray-800">
-                                            <input type="checkbox" />
+                                            <input type="checkbox" checked={individualCheckboxes[index]}
+                                                onChange={() => handleCheckboxChange(index)}
+                                            />
 
                                         </th>
 
@@ -270,8 +294,8 @@ const Inventory = () => {
                                             </div>
                                         </td>
                                         <td class="px-6 py-2 text-gray-800">{el.oderered}</td>
-                                        <td class="px-6 py-2 text-gray-800 cursor-pointer"><img src={dots} alt="dots"/></td>
-                                        
+                                        <td class="px-6 py-2 text-gray-800 cursor-pointer"><img src={dots} alt="dots" /></td>
+
                                         {/* <td class="px-6 py-2 text-gray-800">{el.contact}</td> */}
                                     </tr>
                                 );
