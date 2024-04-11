@@ -256,7 +256,7 @@ const Medication = () => {
         {/* Pagination UI */}
         <div className="pagination flex justify-end pr-10 py-2 stores-pagiantion absolute bottom-0 z-10 right-0 ">
           page {currentPage} of{" "}
-          {nodes ? Math.floor(nodes.length / itemsPerPage) + 1 : 0}
+          {nodes ? Math.floor(nodes.length / itemsPerPage) : 0}
           <button
             className=" p-1 cursor-pointer"
             onClick={() => paginate(currentPage - 1)}
