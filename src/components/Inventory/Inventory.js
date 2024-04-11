@@ -46,7 +46,9 @@ const Inventory = () => {
               onClick={handleFormyChange}
             />
           </div>
-          <h1 className=" text-xl text-center font-extrabold">Create Inventory</h1>
+          <h1 className=" text-xl text-center font-extrabold">
+            Create Inventory
+          </h1>
           <div className="flex flex-col w-[50vw] gap-2">
             <label>Email</label>
             <input
@@ -272,14 +274,13 @@ const Inventory = () => {
     },
     // Add more nodes as needed
   ];
-  const med_body = { email: "bc@gmail.com" };
   useEffect(() => {
     fetch(`http://10.81.25.126:4000/manager/inventory`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: "bc@gmail.com" }), // Convert object to JSON string
+      body: JSON.stringify({ email: localStorage.email }), // Convert object to JSON string
     })
       .then((res) => {
         if (!res.ok) {
@@ -563,7 +564,7 @@ const Inventory = () => {
         {/* Pagination UI */}
         <div className="pagination flex justify-end pr-10 py-2 stores-pagiantion absolute bottom-0 z-10 right-0 ">
           page {currentPage} of{" "}
-          {nodes ? Math.floor(nodes.length / itemsPerPage) + 1 : 0}
+          {nodes ? Math.floor(nodes.length / itemsPerPage) : 0}
           <button
             className=" p-1 cursor-pointer"
             onClick={() => paginate(currentPage - 1)}

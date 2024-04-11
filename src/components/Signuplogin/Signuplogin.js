@@ -1,72 +1,75 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login =  ({ setAuthStatus }) => {
-    const navigate = useNavigate();
+const Login = ({ setAuthStatus }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin =async (e) => {
-    e.preventDefault()
+  const handleLogin = async (e) => {
+    e.preventDefault();
     let userDetails = {
       email: email,
       password: password,
     };
-
+    console.log(process.env.REACT_APP_URL);
     let response1 = await fetch(process.env.REACT_APP_URL + "/admin/login", {
-        credentials: 'include',
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-        body: JSON.stringify(userDetails),
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(userDetails),
+    })
+      .then((response) => {
+        if (response.ok) {
+          localStorage.setItem("email", userDetails.email);
+          navigate("/");
+        }
       })
-        .then((response) => {
-          if (response.ok) {
-            navigate("/");
-          }
-        })
-        .catch((error) => {
-          // Handle network errors or other errors
-          console.error("Fetch error:", error);
-        });
+      .catch((error) => {
+        // Handle network errors or other errors
+        console.error("Fetch error:", error);
+      });
     let response2 = await fetch(process.env.REACT_APP_URL + "/manager/login", {
-        credentials: 'include',
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-        body: JSON.stringify(userDetails),
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(userDetails),
+    })
+      .then((response) => {
+        if (response.ok) {
+          localStorage.setItem("email", userDetails.email);
+          navigate("/medication");
+        }
       })
-        .then((response) => {
-          if (response.ok) {
-            navigate("/medication");
-          }
-        })
-        .catch((error) => {
-          // Handle network errors or other errors
-          console.error("Fetch error:", error);
-        });
+      .catch((error) => {
+        // Handle network errors or other errors
+        console.error("Fetch error:", error);
+      });
     let response3 = await fetch(process.env.REACT_APP_URL + "/user/login", {
-        credentials: 'include',
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-        body: JSON.stringify(userDetails),
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(userDetails),
+    })
+      .then((response) => {
+        if (response.ok) {
+          localStorage.setItem("email", userDetails.email);
+          navigate("/user");
+        }
       })
-        .then((response) => {
-          if (response.ok) {
-            navigate("/user");
-          }
-        })
-        .catch((error) => {
-          // Handle network errors or other errors
-          console.error("Fetch error:", error);
-        });
+      .catch((error) => {
+        // Handle network errors or other errors
+        console.error("Fetch error:", error);
+      });
 
     // Handle login logic here
     console.log("Email:", email);
@@ -144,7 +147,6 @@ const Login =  ({ setAuthStatus }) => {
 };
 
 const SignUp = ({ setAuthStatus }) => {
-
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -153,12 +155,12 @@ const SignUp = ({ setAuthStatus }) => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [address, setAddress] = useState("");
-  console.log("1")
-//   console.log(process.env.REACT_APP_URL, "hehlkj")
+  console.log("1");
+  //   console.log(process.env.REACT_APP_URL, "hehlkj")
   const handleSignUp = async (e) => {
-    e.preventDefault()
-    console.log("2")
-    console.log(process.env.REACT_APP_URL, "3")
+    e.preventDefault();
+    console.log("2");
+    console.log(process.env.REACT_APP_URL, "3");
     let userDetails = {
       name: name,
       email: email,
@@ -181,11 +183,11 @@ const SignUp = ({ setAuthStatus }) => {
 
     if (role === "user") {
       let response = await fetch(process.env.REACT_APP_URL + "/user/signup", {
-        credentials: 'include',
+        credentials: "include",
         method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify(userDetails),
       })
@@ -202,15 +204,18 @@ const SignUp = ({ setAuthStatus }) => {
           console.error("Fetch error:", error);
         });
     } else if (role === "inventory-manager") {
-      let response = await fetch(process.env.REACT_APP_URL + "/manager/signup", {
-        credentials: 'include',
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-        body: JSON.stringify(managerDetails),
-      })
+      let response = await fetch(
+        process.env.REACT_APP_URL + "/manager/signup",
+        {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(managerDetails),
+        }
+      )
         .then((response) => {
           if (response.ok) {
             navigate("/medication");
@@ -225,11 +230,11 @@ const SignUp = ({ setAuthStatus }) => {
         });
     } else if (role === "store-owner") {
       let response = await fetch(process.env.REACT_APP_URL + "/admin/signup", {
-        credentials: 'include',
+        credentials: "include",
         method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify(adminDetails),
       })
@@ -266,7 +271,7 @@ const SignUp = ({ setAuthStatus }) => {
             Sign up
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={(e)=> handleSignUp(e)}>
+        <form className="mt-8 space-y-6" onSubmit={(e) => handleSignUp(e)}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -422,7 +427,6 @@ const SignUp = ({ setAuthStatus }) => {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-
             >
               Sign up
             </button>
