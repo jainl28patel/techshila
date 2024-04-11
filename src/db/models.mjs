@@ -47,6 +47,7 @@ const user = new Schema(
 const order = new Schema(
   {
     status: ["pending" , "completed" , "cancelled"],
+    store_id: String,
     total_amount: Number,
     medicines: [
       {

@@ -273,6 +273,7 @@ router.post("/place-order", isValidUser, async (req, res) => {
   try {
     let med_id = req.body.med_id;
     let quantity = req.body.quantity;
+    let store_id = req.body.store_id;
 
     if (!med_id || !quantity) {
       res.send("missing fields").status(400);
@@ -292,6 +293,7 @@ router.post("/place-order", isValidUser, async (req, res) => {
 
     let order = new orderModel({
       status: status,
+      store_id: store_id,
       total_amount: cost,
       medicines: [
         {
