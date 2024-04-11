@@ -4,6 +4,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 const Layout = () => {
   const location = useLocation();
   const [user,setUser] = useState("store_manager");
+  
   return (
     <>
       <div className=" flex flex-wrap justify-between items-center py-3 px-2 md:px-4 border-b-2 h-[8vh]">
