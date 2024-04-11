@@ -17,7 +17,7 @@ import {
   isValidRole,
 } from "./utils.mjs";
 
-const getEmail = () => {
+const getEmail = (req) => {
   let token = req.headers.cookie?.split("token=")[1];
   if (!token) {
     return;
@@ -51,11 +51,9 @@ router.post("/login", async (req, res) => {
 
   if (
     !data.email ||
-    !data.password ||
-    !data.name ||
-    !isValidEmail(data.email)
+    !data.password 
   ) {
-    res.send("invalid data").status(403);
+    res.status(403).send("invalid data");
     return;
   }
   // check if user already exists
@@ -85,9 +83,9 @@ router.post("/signup", async (req, res) => {
   let contact = req.body.contact;
   let password = req.body.password;
   let confirm_password = req.body.confirm_password;
-  let role = req.body.role;
+  
 
-  if (!name || !email || !contact || !password || !confirm_password || !role) {
+  if (!name || !email || !contact || !password || !confirm_password ) {
     res.send("missing fields").status(400);
     return;
   }
@@ -97,7 +95,7 @@ router.post("/signup", async (req, res) => {
     return;
   }
 
-  if (!isValidRole(role) || typeof contact !== "number") {
+  if (typeof contact !== "number") {
     res.send("bad request").status(400);
     return;
   }
@@ -119,8 +117,12 @@ router.post("/signup", async (req, res) => {
     name: name,
     email: email,
     contact: contact,
-    password: getHash(password),
-    role: role,
+    password: await getHash(password),
+    order_history: [],
+    location: {
+      latitude: 0,
+      longitude: 0
+    }
   });
 
   try {
@@ -130,7 +132,7 @@ router.post("/signup", async (req, res) => {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
-    res.redirect("/dashboard");
+    res.status(200).send("successful")
   } catch (error) {
     console.log(error);
     res.sendStatus(400);
@@ -155,9 +157,11 @@ router.post("/change-password", isValidUser, async (req, res) => {
     return;
   }
 
+  let hash = await getHash(password);
+
   let update = await userModel.findOneAndUpdate(
     { email: email },
-    { $set: { password: getHash(password) } },
+    { $set: { password: hash } },
     { new: true }
   );
 
@@ -169,25 +173,30 @@ router.post("/change-password", isValidUser, async (req, res) => {
 });
 
 router.post("/delete-user", isValidUser, async (req, res) => {
-  let email = getEmail();
-
-  userModel.findOneAndDelete({ email: email }, (err, deletedUser) => {
-    if (err) {
-      res.status(500).send("Intenal Server Error");
-    } else if (!deletedUser) {
-      res.status(500).send("User not found");
-    } else {
-      res.status(200).send("Successful");
+  try {
+    let email = getEmail(req);
+    let deletd_user = await userModel.deleteOne({ email: email }) ;
+  
+    if(deletd_user){
+      res.status(200).send("success")
+    }else{
+      res.status(400).send("unsuccessful")
     }
-  });
+  } catch (error) {
+    console.log(err);
+    res.status(400).send(err);
+  }
 });
 
 // getters
 
 router.get("/search", async (req, res) => {
   let name = req.query.name;
-
-  let data = await medicineModel.find({ $text: { $search: name } });
+  if(name){
+    let data = await medicineModel.find({ $text: { $search: name } });
+  }else{
+    let data = await medicineModel.find();
+  }
 
   if (data) {
     res.status(200).send(data);
@@ -197,7 +206,7 @@ router.get("/search", async (req, res) => {
 });
 
 router.get("/order-history", isValidUser, async (req, res) => {
-  let email = getEmail();
+  let email = getEmail(req);
 
   let order_history = await userModel.findOne({ email: email }).order_history;
 
@@ -222,7 +231,7 @@ router.post("/update-location", isValidUser, async (req, res) => {
     res.send("missing fields").status(400);
     return;
   }
-  let email = getEmail();
+  let email = getEmail(req);
 
   let update = await userModel.findOneAndUpdate(
     { email: email },
@@ -245,7 +254,7 @@ router.post("/update-location", isValidUser, async (req, res) => {
     res.send("missing fields").status(400);
     return;
   }
-  let email = getEmail();
+  let email = getEmail(req);
 
   let update = await userModel.findOneAndUpdate(
     { email: email },
@@ -269,7 +278,7 @@ router.post("/place-order", isValidUser, async (req, res) => {
       res.send("missing fields").status(400);
       return;
     }
-    let email = getEmail();
+    let email = getEmail(req);
 
     let status = ["pending", "completed", "cancelled"].at(
       Math.floor(Math.random() * 10) % 3
