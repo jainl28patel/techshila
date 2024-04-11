@@ -112,8 +112,8 @@ router.post("/signup", async (req, res) => {
     }
   });
 
-router.get("/medicines", isManager, async (req, res)=>{
-    if(!req.user.id) {
+router.post("/medicines", isManager, async (req, res)=>{
+    if(!req.body.email) {
         return res.sendStatus(403)
     }
 
