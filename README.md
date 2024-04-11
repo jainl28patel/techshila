@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+# Medicine Inventory Management Web Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+This web application facilitates role-based authentication for managing medicine inventory in a company. It caters to three user roles: CEO, Store Manager, and User. The CEO oversees all workers and inventory, Store Managers manage inventory based on orders and order statuses, and Users can share their location for finding the nearest stores, order medicines, and track their order statuses. Additionally, users have access to standard features like a dashboard, order history, and profile management.
 
-## Available Scripts
+## Implemented Features
+- **Role-Based Authentication:** Users are authenticated based on their roles (CEO, Store Manager, or User), ensuring appropriate access levels to various features and functionalities.
+- **CEO Functionality:** The CEO has access to oversee all workers and inventory. This includes viewing and managing inventory levels, tracking orders, and monitoring overall performance.
+- **Store Manager Functionality:** Store Managers manage inventory based on orders and order statuses. They can update inventory levels, process orders, and track order statuses.
+- **User Functionality:** Users can share their location to find the nearest stores, order medicines, and track their order statuses. They also have access to a dashboard displaying relevant information, order history, and profile management options.
+- **Dashboard:** Provides a centralized view of relevant information such as inventory levels, order statuses, and user activity.
+- **Order History:** Users can view their past orders and track their statuses for reference.
+- **Profile Management:** Users can manage their profiles, including updating personal information and preferences.
 
-In the project directory, you can run:
+## Future Scopes
+- **OCR (Optical Character Recognition):** Integrate OCR technology to allow users to scan and upload prescriptions, facilitating the ordering process.
+- **Medicine Scheduling:** Enable users to schedule medication reminders and manage their medication intake through the application.
+- **Chatbot Feature:** Implement a chatbot feature to provide users with instant assistance, answer queries, and guide them through the ordering process.
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contributing Team Members
+- Vinay Sisodia
+- Siddharth Gautam
+- Shaurya Priyadarshi
+- Jainil Patel
+- Gynendra Banjare
+- Nalin Sharma
