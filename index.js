@@ -17,6 +17,9 @@ app.use(express.json());
 app.use("/admin", admin);
 app.use("/manager", manager);
 app.use("/user", user);
+app.route("/").get((_req, res) => {
+  res.send("Hello, World!");
+});
 
 // Global error handling
 app.use((err, _req, res, next) => {

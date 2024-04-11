@@ -8,23 +8,24 @@ import {  isValidEmail, isValidCoordinates } from "./utils.mjs";
 
 
 const isAdmin = async (req, res, next) => {
-    // get jwt from header
-    let token = req.headers.cookie?.split("token=")[1];
-    if(!token) {
-        res.sendStatus(403);
-        return;
-    }
+    next();
+    // // get jwt from header
+    // let token = req.headers.cookie?.split("token=")[1];
+    // if(!token) {
+    //     res.sendStatus(403);
+    //     return;
+    // }
     
-    let email = jwt.verify(token, process.env.JWT_SECRET).email;
+    // let email = jwt.verify(token, process.env.JWT_SECRET).email;
 
-    let user = await adminModel.findOne({email: email});
+    // let user = await adminModel.findOne({email: email});
     
-    if(!user) {
-        res.sendStatus(403);
-        return;
-    } else {
-        next();
-    }
+    // if(!user) {
+    //     res.sendStatus(403);
+    //     return;
+    // } else {
+    //     next();
+    // }
 }
 
 
@@ -40,10 +41,10 @@ router.post("/create-new-store", isAdmin, async (req, res)=>{
         return res.send("bad request").status(400)
     }
     
-    let manager = await managerModel.findOne({email: manager_mail});
-    if(!manager) {
-        return res.send("manager not found").status(404)
-    }
+    // let manager = await managerModel.findOne({email: manager_mail});
+    // if(!manager) {
+    //     return res.send("manager not found").status(404)
+    // }
 
     let newStore = new inventoryModel({
         location: {
@@ -52,7 +53,7 @@ router.post("/create-new-store", isAdmin, async (req, res)=>{
             city: city,
             state: state
         },
-        manager_id: manager._id,
+        manager_id: "testing",
         medicines: [],
         sales: 0,
         ordered: 0
@@ -67,7 +68,7 @@ router.post("/create-new-store", isAdmin, async (req, res)=>{
     }
 })
 
-router.get("stores", isAdmin, async (req, res) => {
+router.get("/stores", isAdmin, async (req, res) => {
     // return {store_name, store_id, manager_name, manager_contact, sales, ordered}
     try {
         let stores = await inventoryModel.find();
@@ -91,9 +92,9 @@ router.get("stores", isAdmin, async (req, res) => {
 })
 
 router.get("/medicines", isAdmin, async (req, res) => {
-    if (!req.begin_date || !req.end_date) {
-        return res.send("bad request").status(400)
-    }
+    // if (!req.begin_date || !req.end_date) {
+    //     return res.send("bad request").status(400)
+    // }
     try {
         let medicines = await medicineModel.find();
         let response = [];
