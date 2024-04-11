@@ -1,6 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-
+import { ObjectId } from "mongodb";
 const router = express.Router();
 
 import { userModel,medicineModel, managerModel, inventoryModel, adminModel } from "../db/models.mjs";
@@ -122,19 +122,20 @@ router.post("/create-new-store", isAdmin, async (req, res)=>{
         return res.send("bad request").status(400)
     }
     
-    // let manager = await managerModel.findOne({email: manager_mail});
-    // if(!manager) {
-    //     return res.send("manager not found").status(404)
-    // }
+    let manager = await managerModel.findOne({email: manager_mail});
+    if(!manager) {
+        return res.send("manager not found").status(404)
+    }
 
     let newStore = new inventoryModel({
+        name: name,
         location: {
             latitude: location_lat,
             longitude: location_long,
             city: city,
             state: state
         },
-        manager_id: "testing",
+        manager_id: manager._id,
         medicines: [],
         sales: 0,
         ordered: 0
@@ -154,17 +155,18 @@ router.get("/stores", isAdmin, async (req, res) => {
     try {
         let stores = await inventoryModel.find();
         let response = [];
-        stores.forEach(store => async () => {
-            let manager = await managerModel.findById(store.manager_id);
+        for (const store of stores) {
+            let manager = await managerModel.find({ _id: new ObjectId(store.manager_id) });
+            // Assuming manager is always found, but you might want to handle cases where it's not found
             response.push({
                 store_name: store.name,
                 store_id: store._id,
-                manager_name: manager.name,
-                manager_contact: manager.phone,
+                manager_name: manager ? manager.name : 'Manager Not Found',
+                manager_contact: manager ? manager.phone : 'N/A',
                 sales: store.sales,
                 ordered: store.ordered
             });
-        })
+        }
         res.send(response);
     } catch (error) {
         console.log(error);
