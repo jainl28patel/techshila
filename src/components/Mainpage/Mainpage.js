@@ -140,7 +140,7 @@ const Mainpage = () => {
           <img src="\images\Frame 1244832715.svg" alt="graph" />
         </div>
       </div>
-      <div className="flex">
+      {/* <div className="flex">
         <div className="flex flex-col border rounded-[6px] border-2  px-4 py-3 bg-white ">
           <div className="flex  text-[12px]">
             <img
@@ -159,9 +159,9 @@ const Mainpage = () => {
             Delete Entry
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="flex">
+      {/* <div className="flex">
         <div className=" rounded-[6px] border-2 px-6 py-6 bg-white">
           <div className=" flex justify-end ">
             <img className="" src="\images\X.svg" alt="X" />
@@ -198,7 +198,7 @@ const Mainpage = () => {
           </div>
 
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
