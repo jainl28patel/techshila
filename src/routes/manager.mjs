@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-import { medicinesModel, inventoryModel } from "../db/models.mjs";
+import { medicineModel, inventoryModel } from "../db/models.mjs";
 
 const isManager = async (req, res, next) => {
     // get jwt from header
