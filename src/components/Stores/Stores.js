@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Stores.scss";
 import avatar from "../../assets/Avatar.svg";
+// import { Select, Space } from "antd";
 
 const Stores = () => {
   const nodes = [
@@ -174,6 +175,18 @@ const Stores = () => {
         >
           Create New Store
         </span>
+      </div>
+      <div className="">
+        {/* <Select
+          defaultValue="lucy"
+          style={{ width: 120 }}
+          options={[
+            { value: "jack", label: "Jack" },
+            { value: "lucy", label: "Lucy" },
+            { value: "Yiminghe", label: "yiminghe" },
+            { value: "disabled", label: "Disabled", disabled: true },
+          ]}
+        /> */}
       </div>
       <div className="table">
         <div class="relative overflow-x-auto">
