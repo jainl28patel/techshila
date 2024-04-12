@@ -10,22 +10,22 @@ import {  isValidEmail, isValidCoordinates, getHash, compareHashedPassword } fro
 const isAdmin = async (req, res, next) => {
     next();
     // get jwt from header
-    let token = req.headers.cookie?.split("token=")[1];
-    if(!token) {
-        res.sendStatus(403);
-        return;
-    }
+    // let token = req.headers.cookie?.split("token=")[1];
+    // if(!token) {
+    //     res.sendStatus(403);
+    //     return;
+    // }
     
-    let email = jwt.verify(token, process.env.JWT_SECRET).email;
+    // let email = jwt.verify(token, process.env.JWT_SECRET).email;
 
-    let user = await adminModel.findOne({email: email});
+    // let user = await adminModel.findOne({email: email});
     
-    if(!user) {
-        res.sendStatus(403);
-        return;
-    } else {
-        next();
-    }
+    // if(!user) {
+    //     res.sendStatus(403);
+    //     return;
+    // } else {
+    //     next();
+    // }
 }
 
 router.post("/login", async (req, res) => {
