@@ -1,5 +1,23 @@
 # Medicine Inventory Management Web Application
 
+## Setup Instructions
+
+### Backend
+* Create a `.env` file as per the `.sample.env` file in the `backend` directory.
+* Add `JWT_SECRET` and `MONGO_URI` to the `.env` file.
+
+### Frontend
+* Create a `.env` file as per the `.sample.env` file in the `frontend` directory.
+* Add `REACT_APP_API_URL` to the `.env` file.
+
+
+### Running the Application
+* Just install docker and run the below command in the root directory of the project.
+* Backend will run on port 4000 and frontend will run on port 3000.
+```bash
+docker-compose up
+```
+
 ## Overview
 This web application facilitates role-based authentication for managing medicine inventory in a company. It caters to three user roles: CEO, Store Manager, and User. The CEO oversees all workers and inventory, Store Managers manage inventory based on orders and order statuses, and Users can share their location for finding the nearest stores, order medicines, and track their order statuses. Additionally, users have access to standard features like a dashboard, order history, and profile management.
 
