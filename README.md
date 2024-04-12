@@ -9,12 +9,14 @@
 ### Frontend
 * Create a `.env` file as per the `.sample.env` file in the `frontend` directory.
 * Add `REACT_APP_API_URL` to the `.env` file.
+* Add `url` to the `proxy` field in the `package.json` file.
 
 
 ### Running the Application
 * Just install docker and run the below command in the root directory of the project.
 * Backend will run on port 4000 and frontend will run on port 3000.
 ```bash
+docker-compose build
 docker-compose up
 ```
 
