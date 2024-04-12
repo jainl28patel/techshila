@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
 
 const Login = ({ setAuthStatus }) => {
   const navigate = useNavigate();
@@ -13,63 +14,45 @@ const Login = ({ setAuthStatus }) => {
       password: password,
     };
     console.log(process.env.REACT_APP_URL);
-    let response1 = await fetch(process.env.REACT_APP_URL + "/admin/login", {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(userDetails),
+
+    
+
+
+    let response1 = await axios.post('/admin/login', userDetails)
+    .then(function (response) {
+      console.log(response);
+      if(response.status == 200 ){
+        localStorage.setItem("email", userDetails.email);
+        navigate("/");
+      }
     })
-      .then((response) => {
-        if (response.ok) {
-          localStorage.setItem("email", userDetails.email);
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        // Handle network errors or other errors
-        console.error("Fetch error:", error);
-      });
-    let response2 = await fetch(process.env.REACT_APP_URL + "/manager/login", {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(userDetails),
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+    let response2 = await axios.post('/user/login', userDetails)
+    .then(function (response) {
+      console.log(response);
+      if(response.status == 200 ){
+        localStorage.setItem("email", userDetails.email);
+        navigate("/user");
+      }
     })
-      .then((response) => {
-        if (response.ok) {
-          localStorage.setItem("email", userDetails.email);
-          navigate("/medication");
-        }
-      })
-      .catch((error) => {
-        // Handle network errors or other errors
-        console.error("Fetch error:", error);
-      });
-    let response3 = await fetch(process.env.REACT_APP_URL + "/user/login", {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(userDetails),
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+    let response3 = await axios.post('/manager/login', userDetails)
+    .then(function (response) {
+      console.log(response);
+      if(response.status == 200 ){
+        localStorage.setItem("email", userDetails.email);
+        navigate("/medication");
+      }
     })
-      .then((response) => {
-        if (response.ok) {
-          localStorage.setItem("email", userDetails.email);
-          navigate("/user");
-        }
-      })
-      .catch((error) => {
-        // Handle network errors or other errors
-        console.error("Fetch error:", error);
-      });
+    .catch(function (error) {
+      console.log(error);
+    });
 
     // Handle login logic here
     console.log("Email:", email);
@@ -182,74 +165,42 @@ const SignUp = ({ setAuthStatus }) => {
     };
 
     if (role === "user") {
-      let response = await fetch(process.env.REACT_APP_URL + "/user/signup", {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(userDetails),
-      })
-        .then((response) => {
-          if (response.ok) {
-            navigate("/user");
-          } else {
-            // Handle errors based on status code
-            console.error("Request failed with status code " + response.status);
-          }
-        })
-        .catch((error) => {
-          // Handle network errors or other errors
-          console.error("Fetch error:", error);
-        });
-    } else if (role === "inventory-manager") {
-      let response = await fetch(
-        process.env.REACT_APP_URL + "/manager/signup",
-        {
-          credentials: "include",
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(managerDetails),
+      let response = await axios.post('/user/signup', userDetails)
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200 ){
+          localStorage.setItem("email", userDetails.email);
+          navigate("/user");
         }
-      )
-        .then((response) => {
-          if (response.ok) {
-            navigate("/medication");
-          } else {
-            // Handle errors based on status code
-            console.error("Request failed with status code " + response.status);
-          }
-        })
-        .catch((error) => {
-          // Handle network errors or other errors
-          console.error("Fetch error:", error);
-        });
-    } else if (role === "store-owner") {
-      let response = await fetch(process.env.REACT_APP_URL + "/admin/signup", {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(adminDetails),
       })
-        .then((response) => {
-          if (response.ok) {
-            navigate("/");
-          } else {
-            // Handle errors based on status code
-            console.error("Request failed with status code " + response.status);
-          }
-        })
-        .catch((error) => {
-          // Handle network errors or other errors
-          console.error("Fetch error:", error);
-        });
+      .catch(function (error) {
+        console.log(error);
+      });
+      
+    } else if (role === "inventory-manager") {
+      let response = await axios.post('/manager/signup', userDetails)
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200 ){
+          localStorage.setItem("email", userDetails.email);
+          navigate("/medication");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    } else if (role === "store-owner") {
+      let response = await axios.post('/admin/signup', userDetails)
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200 ){
+          localStorage.setItem("email", userDetails.email);
+          navigate("/");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     }
 
     // Handle sign up logic here
