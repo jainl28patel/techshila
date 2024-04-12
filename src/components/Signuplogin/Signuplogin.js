@@ -23,7 +23,7 @@ const Login = ({ setAuthStatus }) => {
       console.log(response);
       if(response.status == 200 ){
         localStorage.setItem("email", userDetails.email);
-        navigate("/");
+        navigate("/dashboard");
       }
     })
     .catch(function (error) {
@@ -47,7 +47,7 @@ const Login = ({ setAuthStatus }) => {
       console.log(response);
       if(response.status == 200 ){
         localStorage.setItem("email", userDetails.email);
-        navigate("/medication");
+        navigate("/manager");
       }
     })
     .catch(function (error) {
