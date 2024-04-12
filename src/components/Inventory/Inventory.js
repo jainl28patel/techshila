@@ -12,6 +12,7 @@ const Inventory = () => {
       medicine_name: "",
       quantity: "",
       batch_id: "",
+      image_url: "",
       expiry_date: new Date(),
       price: "",
     });
@@ -64,6 +65,13 @@ const Inventory = () => {
               value={newinventory.medicine_name}
               onChange={(e) => handleChange(e)}
             />
+            <label>Image Url</label>
+            <input
+              className=" border-2"
+              name="image_url"
+              value={newinventory.image_url}
+              onChange={(e) => handleChange(e)}
+            />
             <label>Quantity</label>
             <input
               name="quantity"
@@ -81,6 +89,7 @@ const Inventory = () => {
             <label>Expiry Date</label>
             <input
               className=" border-2"
+              type="date"
               name="expiry_date"
               value={newinventory.expiry_date}
               onChange={(e) => handleChange(e)}

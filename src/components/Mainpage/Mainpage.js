@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Mainpage = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -17,6 +17,17 @@ const Mainpage = () => {
     const files = [...e.target.files];
     setUploadedFiles(files);
   };
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetch(`http://10.81.25.126:4000/admin/dashboard`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setData(data);
+      });
+  }, []);
 
   return (
     <div className=" py-6 px-6 bg-[#E2E8F0] w-[85vw]">
@@ -85,26 +96,19 @@ const Mainpage = () => {
             <div className="flex border-2 rounded-[6px] items-center justify-center">
               <div className="border-r-2 py-8 pl-10 px-14">
                 <div className="text-[16px]"> No. of Stones</div>
-                <div className="text-[24px] font-bold">15</div>
+                <div className="text-[24px] font-bold">
+                  {data?.no_of_stores}
+                </div>
               </div>
               <div className="py-8 px-8">
                 <div className="text-[16px]">Sales</div>
-                <div className="my-2 text-[20px] font-bold">145K</div>
-                <div className="text-[#43A047] text-[14px]">
-                  +0.1% Last month
+                <div className="my-2 text-[20px] font-bold">
+                  {data?.total_sales}
                 </div>
               </div>
               <div className="py-8 px-8">
                 <div className="text-[16px]">Orders</div>
-                <div className="my-2 text-[20px] font-bold">160K</div>
-                <div className="text-[#E53935] text-[14px]">
-                  -0.2% Last month
-                </div>
-              </div>
-              <div className="py-8 px-8">
-                <div className="text-[16px]">Sales</div>
-                <div className="my-2 text-[20px] font-bold">9.375%</div>
-                <div className="text-[#43A047] text-[14px]">+2% Last month</div>
+                <div className="my-2 text-[20px] font-bold">{data?.total_ordered}</div>
               </div>
             </div>
           </div>
