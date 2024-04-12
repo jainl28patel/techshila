@@ -6,12 +6,13 @@ import "express-async-errors";
 import admin from "./src/routes/admin.mjs";
 import manager from "./src/routes/manager.mjs";
 import user from "./src/routes/user.mjs";
-
+import cookieParser from "cookie-parser";
 const PORT = process.env.PORT || 4000;
 const app = express();
+app.use(cookieParser())
 
 app.use(cors({
-    origin:"http://10.81.38.59:3000",
+    origin:"*",
     credentials: true,
     optionsSuccessStatus: 200
 }));

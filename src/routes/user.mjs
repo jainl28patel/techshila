@@ -36,12 +36,10 @@ const isValidUser = async (req, res, next) => {
   let email = jwt.verify(token, process.env.JWT_SECRET).email;
 
   let user = await userModel.findOne({ email: email });
-
   if (user) {
     next();
   } else {
-    res.send("invalid user");
-    res.sendStatus(403);
+    res.status(403).send("invalid user");
   }
 };
 
@@ -77,7 +75,6 @@ router.post("/login", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    console.log(req);
     let name = req.body.name;
     let email = req.body.email;
     let contact = req.body.contact;
@@ -147,6 +144,23 @@ router.get("/dashboard", isValidUser, async (req, res) => {
   res.send("dashboard").status(200);
 });
 
+router.get("/user-details", isValidUser, async (req, res) => {
+  let token = req.headers.cookie?.split("token=")[1];
+  if (!token) {
+    res.sendStatus(403);
+    return;
+  }
+
+  let email = jwt.verify(token, process.env.JWT_SECRET).email;
+
+  let user = await userModel.findOne({ email: email });
+  if (user) {
+    res.send({name: user.name, email: user.email, contact: user.contact, latitude: user.location.latitude, longitude: user.location.longitude})
+  } else {
+    res.status(200).send("invalid user");
+  }
+});
+
 router.post("/change-password", isValidUser, async (req, res) => {
   let password = req.body.password;
   let confirm_password = req.body.confirm_password;
@@ -204,46 +218,41 @@ router.get("/search", async (req, res) => {
   }
 });
 
+
 router.get("/order-history", isValidUser, async (req, res) => {
-  let email = getEmail(req);
+  try {
+    let email = getEmail(req);
 
-  let order_history = await userModel.findOne({ email: email }).order_history;
-
-  if (order_history.length > 0) {
+    let user = await userModel.findOne({ email: email });
+    let order_history = user.order_history;
+  
+    let medSet = new Set();
+    
+    
+    if (order_history && order_history.length > 0) {
+      for (let order_id of order_history) {
+        let order = await orderModel.findById(order_id);
+        for (let med of order.medicines) {
+            medSet.add(med.id);
+        }
+    }
     let order_list = [];
-
-    Array.from(order_history).map(async (order_id) => {
-      let order = await orderModel.findById(order_id);
-      order_list.push(order);
-    });
-    res.status(200).send(JSON.parse(JSON.stringify(order_list)));
-  } else {
-    res.status(400).send("Not Found");
+    for (let med_id of medSet) {
+        let medicine = await medicineModel.findById(med_id);
+        order_list.push(medicine);
+    }
+    res.status(200).send(order_list);
+    } else {
+      res.status(200).send("no-order-history");
+    }
+  } catch (error) {
+    console.log(error);
+    res.send(400).send(error);
   }
 });
 
-router.post("/update-location", isValidUser, async (req, res) => {
-  let lat = req.body.latitude;
-  let long = req.body.longitude;
 
-  if (!lat || !long) {
-    res.send("missing fields").status(400);
-    return;
-  }
-  let email = getEmail(req);
 
-  let update = await userModel.findOneAndUpdate(
-    { email: email },
-    { $set: { location: { latitude: lat, longitude: long } } },
-    { new: true }
-  );
-
-  if (update) {
-    res.status(200).send("Successful");
-  } else {
-    res.status(500).send("Intenal Server Error");
-  }
-});
 
 router.post("/update-location", isValidUser, async (req, res) => {
   let lat = req.body.latitude;
@@ -302,6 +311,8 @@ router.post("/place-order", isValidUser, async (req, res) => {
         },
       ],
     });
+
+    order.save()
 
     let update = await userModel.findOneAndUpdate(
       { email: email },
